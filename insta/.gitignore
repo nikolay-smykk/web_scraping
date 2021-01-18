@@ -1,2 +1,5 @@
 node_modules
-CONST.js
+constants.js
+screen
+secret.js
+Secret.js
