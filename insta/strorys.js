@@ -1,19 +1,5 @@
 const puppeteer = require('puppeteer');
 const secret = require('./Secret.js');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const csvWriter = createCsvWriter({
-  path: `${Date.now()}.csv`,
-  header: [
-    { id: 'name', title: 'Name' },
-    { id: 'publich', title: 'publich' },
-    { id: 'folower', title: 'folower' },
-    { id: 'folowers', title: 'folowers' },
-    { id: 'imgScr', title: 'imgScr' },
-  ],
-});
-const data = [];
-// const LOGIN = constants.LOGIN;
-// const PASSWORD = constants.PASSWORD;
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -65,33 +51,6 @@ async function authCall(page) {
 
 //DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
 
-async function likeProfile(page) {
-  //go to akk
-  const USERNAMES = ['nikolay_smyk', 'goida_atelier'];
-
-  for (let USERNAME of USERNAMES) {
-    await page.goto(`http://instagram.com/${USERNAME}`);
-    await page.waitForTimeout(4000);
-    const imgScr = await page.$eval('img', (el) => el.getAttribute('src'));
-
-    const headerDate = await page.$$eval('header li', (els) =>
-      els.map((el) => el.textContent)
-    );
-    const publich = headerDate[0];
-    const folower = headerDate[1];
-    const folowers = headerDate[2];
-    // const folow = headerDate.split(',');
-    console.log(headerDate[0]);
-    const name = await page.$eval('header h1', (el) => el.textContent);
-
-    data.push({ name, publich, folower, folowers, imgScr });
-  }
-  await csvWriter
-    .writeRecords(data)
-    .then(() => console.log('The CSV file was written successfully'));
-}
-//DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
-
 //seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
 async function seeStory(page) {
   await page.waitForTimeout(4000);
@@ -116,7 +75,6 @@ async function seeStory(page) {
     while (true) {
       await page.waitForTimeout(2000);
       await nextStory.click();
-      console.log(nextStory);
     }
   } catch {
     console.log('all Good and Cancel');
