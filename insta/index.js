@@ -1,6 +1,17 @@
 const puppeteer = require('puppeteer');
 const secret = require('./Secret.js');
-
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const csvWriter = createCsvWriter({
+  path: `${Date.now()}.csv`,
+  header: [
+    { id: 'name', title: 'Name' },
+    { id: 'publich', title: 'publich' },
+    { id: 'folower', title: 'folower' },
+    { id: 'folowers', title: 'folowers' },
+    { id: 'imgScr', title: 'imgScr' },
+  ],
+});
+const data = [];
 // const LOGIN = constants.LOGIN;
 // const PASSWORD = constants.PASSWORD;
 
@@ -13,22 +24,10 @@ const secret = require('./Secret.js');
 
   const page = await browser.newPage();
   await authCall(page);
-
-  //go to akk
-  const USERNAME = 'nikolay_smyk';
-  await page.goto(`http://instagram.com/${USERNAME}`);
-  await page.waitForTimeout(4000);
-  //click image
-
-  await (await page.$('article a')).click();
-  await page.waitForTimeout(4000);
-  await (await page.$$('button'))[3].click();
-
-  //   await browser.close();
+  await likeProfile(page);
 })();
 
-//see story
-
+//auth/////////////////////////////////////////auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
 async function authCall(page) {
   await page.goto('http://instagram.com/');
   //   await page.waitForTimeout(1000);
@@ -62,3 +61,68 @@ async function authCall(page) {
   //dont now
   await page.waitForTimeout(4000);
 }
+//auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
+
+//DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
+
+async function likeProfile(page) {
+  //go to akk
+  const USERNAMES = ['nikolay_smyk', 'goida_atelier'];
+
+  for (let USERNAME of USERNAMES) {
+    await page.goto(`http://instagram.com/${USERNAME}`);
+    await page.waitForTimeout(4000);
+    const imgScr = await page.$eval('img', (el) => el.getAttribute('src'));
+
+    const headerDate = await page.$$eval('header li', (els) =>
+      els.map((el) => el.textContent)
+    );
+    const publich = headerDate[0];
+    const folower = headerDate[1];
+    const folowers = headerDate[2];
+    // const folow = headerDate.split(',');
+    console.log(headerDate[0]);
+    const name = await page.$eval('header h1', (el) => el.textContent);
+
+    data.push({ name, publich, folower, folowers, imgScr });
+  }
+  await csvWriter
+    .writeRecords(data)
+    .then(() => console.log('The CSV file was written successfully'));
+}
+//DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
+
+//seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
+async function seeStory(page) {
+  await page.waitForTimeout(4000);
+  //click Story
+  const buttonStory = (
+    await page.$x(
+      '//*[@id="react-root"]/section/main/section/div/div[1]/div/div/div/div/ul/li[3]/div/button'
+    )
+  )[0];
+  await page.waitForTimeout(1000);
+  await buttonStory.click();
+
+  await page.waitForTimeout(4000);
+
+  const nextStory = (
+    await page.$x(
+      '//*[@id="react-root"]/section/div[1]/div/section/div/button[2]'
+    )
+  )[0];
+
+  try {
+    while (true) {
+      await page.waitForTimeout(2000);
+      await nextStory.click();
+      console.log(nextStory);
+    }
+  } catch {
+    console.log('all Good and Cancel');
+  }
+
+  //   await browser.close();
+}
+
+//seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
