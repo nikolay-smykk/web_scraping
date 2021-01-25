@@ -14,8 +14,7 @@ const csvWriter = createCsvWriter({
 const data = [];
 // const LOGIN = constants.LOGIN;
 // const PASSWORD = constants.PASSWORD;
-
-(async () => {
+async function start() {
   const browser = await puppeteer.launch({
     headless: false,
     executablePath:
@@ -25,7 +24,7 @@ const data = [];
   const page = await browser.newPage();
   await authCall(page);
   await seeStory(page);
-})();
+}
 
 //auth/////////////////////////////////////////auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
 async function authCall(page) {
@@ -96,11 +95,7 @@ async function likeProfile(page) {
 async function seeStory(page) {
   await page.waitForTimeout(4000);
   //click Story
-  const buttonStory = (
-    await page.$x(
-      '//*[@id="react-root"]/section/main/section/div/div[1]/div/div/div/div/ul/li[3]/div/button'
-    )
-  )[0];
+  const buttonStory = $$('ul li')[3];
   await page.waitForTimeout(1000);
   await buttonStory.click();
 
@@ -126,3 +121,4 @@ async function seeStory(page) {
 }
 
 //seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
+start();

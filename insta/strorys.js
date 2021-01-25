@@ -55,14 +55,12 @@ async function authCall(page) {
 async function seeStory(page) {
   await page.waitForTimeout(4000);
   //click Story
-  const buttonStory = (
-    await page.$x(
-      '//*[@id="react-root"]/section/main/section/div/div[1]/div/div/div/div/ul/li[3]/div/button'
-    )
-  )[0];
+  const story = await page.$$('ul li button');
+  story[1].click();
+
   await page.waitForTimeout(1000);
   await buttonStory.click();
-
+  console.log('1');
   await page.waitForTimeout(4000);
 
   const nextStory = (
@@ -70,7 +68,7 @@ async function seeStory(page) {
       '//*[@id="react-root"]/section/div[1]/div/section/div/button[2]'
     )
   )[0];
-
+  await page.waitForTimeout(4000);
   try {
     while (true) {
       await page.waitForTimeout(2000);
