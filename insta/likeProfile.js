@@ -1,20 +1,9 @@
 const puppeteer = require('puppeteer');
 const secret = require('./Secret.js');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const csvWriter = createCsvWriter({
-  path: `${Date.now()}.csv`,
-  header: [
-    { id: 'name', title: 'Name' },
-    { id: 'publich', title: 'publich' },
-    { id: 'folower', title: 'folower' },
-    { id: 'folowers', title: 'folowers' },
-    { id: 'imgScr', title: 'imgScr' },
-  ],
-});
-const data = [];
+
 // const LOGIN = constants.LOGIN;
 // const PASSWORD = constants.PASSWORD;
-async function start() {
+(async () => {
   const browser = await puppeteer.launch({
     headless: false,
     executablePath:
@@ -24,7 +13,7 @@ async function start() {
   const page = await browser.newPage();
   await authCall(page);
   await likeProfile(page);
-}
+})();
 
 //auth/////////////////////////////////////////auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
 async function authCall(page) {
@@ -88,9 +77,5 @@ async function likeProfile(page) {
   await csvWriter
     .writeRecords(data)
     .then(() => console.log('The CSV file was written successfully'));
-
-  await page.close();
 }
 //DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
-
-start();

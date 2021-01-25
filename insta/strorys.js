@@ -9,12 +9,7 @@ const secret = require('./Secret.js');
   });
 
   const page = await browser.newPage();
-  await authCall(page);
-  await seeStory(page);
-})();
 
-//auth/////////////////////////////////////////auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
-async function authCall(page) {
   await page.goto('http://instagram.com/');
   //   await page.waitForTimeout(1000);
   await page.waitForSelector('input');
@@ -37,48 +32,39 @@ async function authCall(page) {
   await (await page.$$('button'))[1].click();
 
   //we in page insta
-
+  console.log('we in page');
   //dont now
   await page.waitForTimeout(4000);
   await (
     await page.$x('/html/body/div[4]/div/div/div/div[3]/button[2]')
   )[0].click();
+  console.log('1');
 
   //dont now
-  await page.waitForTimeout(4000);
-}
-//auth/////////////////////////////////////////auth/////////////////////////////////////////auth///////////////////////////////////////
 
-//DataProfile/////////////////////////////////////////likeProfile/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
-
-//seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
-async function seeStory(page) {
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(2000);
   //click Story
-  const story = await page.$$('ul li button');
-  story[1].click();
+  console.log('2');
+  await page.waitForTimeout(6000);
 
-  await page.waitForTimeout(1000);
-  await buttonStory.click();
-  console.log('1');
+  const storysss = await page.$$('ul li button');
+
+  await storysss[2].click();
+  console.log('3');
+
+  await page.waitForTimeout(2000);
+  //====================================================
+
   await page.waitForTimeout(4000);
 
-  const nextStory = (
-    await page.$x(
-      '//*[@id="react-root"]/section/div[1]/div/section/div/button[2]'
-    )
-  )[0];
-  await page.waitForTimeout(4000);
-  try {
-    while (true) {
+  while (true) {
+    try {
+      const nextStory = await page.$$('section button');
+      const nextSTOREEEE = await nextStory[4];
       await page.waitForTimeout(2000);
-      await nextStory.click();
+      await nextSTOREEEE.click();
+    } catch {
+      await page.close();
     }
-  } catch {
-    console.log('all Good and Cancel');
   }
-
-  //   await browser.close();
-}
-
-//seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory/////////////////////////////////////////seeStory///////////////////////////////////////
+})();
